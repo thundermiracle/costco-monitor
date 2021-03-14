@@ -20,6 +20,8 @@ module.exports = {
     "jest/globals": true,
   },
   rules: {
+    "@typescript-eslint/no-unsafe-assignment": 0,
+    "import/prefer-default-export": 0,
     "no-console": 1,
     "linebreak-style": 0,
     "no-unused-vars": 1,
