@@ -5,7 +5,7 @@ export function getPriceFromString(
     return null;
   }
 
-  const purifiedPriceStr = priceStr.replace(/[^0-9]/g, "");
+  const purifiedPriceStr = priceStr.replace(/[^0-9.]/g, "");
   if (purifiedPriceStr.length === 0) {
     return null;
   }
