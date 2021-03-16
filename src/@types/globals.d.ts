@@ -3,7 +3,11 @@
 declare namespace NodeJS {
   interface ProcessEnv {
     readonly NODE_ENV: "development" | "production" | "test";
-    readonly COSTCO_USER?: string;
-    readonly COSTCO_PASS?: string;
+    readonly CostcoUser?: string;
+    readonly CostcoPass?: string;
+    readonly MailService?: string;
+    readonly MailUser?: string;
+    readonly MailPassword?: string;
+    readonly MailTo?: string;
   }
 }

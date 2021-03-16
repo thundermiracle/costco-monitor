@@ -55,14 +55,14 @@ export async function getProductPriceDirectly(
 }
 
 export async function login(page: Page): Promise<void> {
-  if (!process.env.COSTCO_USER || !process.env.COSTCO_PASS) {
-    throw new Error("COSTCO_USER & COSTCO_PASS MUST be defined in .env");
+  if (!process.env.CostcoUser || !process.env.CostcoPass) {
+    throw new Error("CostcoUser & CostcoPass MUST be defined in .env");
   }
 
   await redirect(page, Constants.COSTCO_LOGIN_URL);
 
-  await page.type(SelectorNames.LOGIN_EMAIL, process.env.COSTCO_USER);
-  await page.type(SelectorNames.LOGIN_PASSWORD, process.env.COSTCO_PASS);
+  await page.type(SelectorNames.LOGIN_EMAIL, process.env.CostcoUser);
+  await page.type(SelectorNames.LOGIN_PASSWORD, process.env.CostcoPass);
   await page.click(SelectorNames.LOGIN_BUTTON);
 }
 
