@@ -44,9 +44,9 @@ async function main() {
       .map(
         ({ url, priceBef, latestPrice }) => `
       <div>
-        <div><span>【商品リンク】：</span>　${url}</div>
-        <div><span>【旧価格】：</span>　${priceBef}</div>
-        <div><span>【新価格】：</span>　${latestPrice}</div>
+        <div><span>【商品リンク】：</span>　¥${url}</div>
+        <div><span>【旧価格】：</span>　¥${priceBef}</div>
+        <div><span>【新価格】：</span>　¥${latestPrice}</div>
       </div>
     `,
       )

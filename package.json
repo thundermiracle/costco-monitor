@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "description": "Monitor product's price & send email when price is down",
   "main": "dist/index.js",
-  "keywords": [],
+  "keywords": [
+    "costo",
+    "monitor",
+    "price"
+  ],
   "author": "ThunderMiracle",
   "license": "MIT",
   "repository": {
