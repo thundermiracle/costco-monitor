@@ -9,5 +9,6 @@ declare namespace NodeJS {
     readonly MailUser?: string;
     readonly MailPassword?: string;
     readonly MailTo?: string;
+    readonly Urls?: string;
   }
 }

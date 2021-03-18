@@ -13,15 +13,12 @@ MailService　→　メール送信用のサービス（デフォルトGmail）
 MailUser　→　メールアドレス
 MailPassword　→　パスワード
 MailTo　→　宛先のメールアドレス
+Urls　→　監視商品のリンクリスト（JSON）
 ```
 
 メールの２段階認証（2FA）が有効になった場合の設定方法について、下記の記事ご参考ください。
 
 [https://thundermiracle.com/blog/2020-06-13-smtp-gmail-by-nodemailer/#gmail%E3%81%AE%E8%A8%AD%E5%AE%9A](https://thundermiracle.com/blog/2020-06-13-smtp-gmail-by-nodemailer/#gmail%E3%81%AE%E8%A8%AD%E5%AE%9A)
-
-## 監視商品の設定
-
-`./src/config/Urls.ts`に登録してください。
 
 ## 開発モード
 

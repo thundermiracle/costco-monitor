@@ -1,7 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import dotenv from "dotenv";
 import puppeteer from "puppeteer";
-import Urls from "./config/Urls";
 import { getProductPriceDirectly, login } from "./core";
 import priceRepository from "./db/priceRepository";
 import mailer from "./mailer";
@@ -12,6 +11,11 @@ dotenv.config();
 async function main() {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
+
+  if (process.env.Urls == null) {
+    return;
+  }
+  const Urls = JSON.parse(process.env.Urls) as string[];
 
   // login first
   await login(page);
@@ -44,7 +48,7 @@ async function main() {
       .map(
         ({ url, priceBef, latestPrice }) => `
       <div>
-        <div><span>【商品リンク】：</span>　¥${url}</div>
+        <div><span>【商品リンク】：</span>　${url}</div>
         <div><span>【旧価格】：</span>　¥${priceBef}</div>
         <div><span>【新価格】：</span>　¥${latestPrice}</div>
       </div>
@@ -58,5 +62,4 @@ async function main() {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-main();
+main().finally(() => process.exit());

@@ -8,6 +8,11 @@
     "monitor",
     "price"
   ],
+  "files": [
+    "dist",
+    "data",
+    "Urls.json"
+  ],
   "author": "ThunderMiracle",
   "license": "MIT",
   "repository": {
