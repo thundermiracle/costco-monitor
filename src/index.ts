@@ -1,12 +1,13 @@
 /* eslint-disable no-await-in-loop */
 import dotenv from "dotenv";
 import puppeteer from "puppeteer";
+import { join } from "path";
 import { getProductPriceDirectly, login } from "./core";
 import priceRepository from "./db/priceRepository";
 import mailer from "./mailer";
 
 // read .env
-dotenv.config();
+dotenv.config({ path: join(__dirname, "../", ".env") });
 
 async function main() {
   let noSandboxOpts = {};
@@ -70,4 +71,8 @@ async function main() {
   }
 }
 
-main().finally(() => process.exit());
+main()
+  .then(() => process.exit())
+  .catch((ex) => {
+    throw ex;
+  });
