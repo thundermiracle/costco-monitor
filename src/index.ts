@@ -9,7 +9,15 @@ import mailer from "./mailer";
 dotenv.config();
 
 async function main() {
-  const browser = await puppeteer.launch({ headless: true });
+  let noSandboxOpts = {};
+  if (Boolean(process.env.NO_SANDBOX) === true) {
+    noSandboxOpts = { args: ["--no-sandbox", "--disable-setuid-sandbox"] };
+  }
+
+  const browser = await puppeteer.launch({
+    headless: true,
+    ...noSandboxOpts,
+  });
   const page = await browser.newPage();
 
   if (process.env.Urls == null) {

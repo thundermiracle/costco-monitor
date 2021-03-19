@@ -10,5 +10,6 @@ declare namespace NodeJS {
     readonly MailPassword?: string;
     readonly MailTo?: string;
     readonly Urls?: string;
+    readonly NO_SANDBOX?: string;
   }
 }
