@@ -10,14 +10,12 @@ import mailer from "./mailer";
 dotenv.config({ path: join(__dirname, "../", ".env") });
 
 async function main() {
-  let noSandboxOpts = {};
-  if (Boolean(process.env.NO_SANDBOX) === true) {
-    noSandboxOpts = { args: ["--no-sandbox", "--disable-setuid-sandbox"] };
-  }
-
   const browser = await puppeteer.launch({
     headless: true,
-    ...noSandboxOpts,
+    args:
+      Boolean(process.env.NO_SANDBOX) === true
+        ? ["--no-sandbox", "--disable-setuid-sandbox"]
+        : [],
   });
   const page = await browser.newPage();
 
@@ -50,6 +48,8 @@ async function main() {
       });
     }
   }
+
+  await browser.close();
 
   // send mail if price changed
   if (priceChangedList.length > 0) {

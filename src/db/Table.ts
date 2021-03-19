@@ -1,4 +1,5 @@
 import fs from "fs";
+import { join } from "path";
 import { filterData, SearchType } from "filter-data";
 
 type SearchCondition = {
@@ -13,6 +14,7 @@ type SearchConditionExtend<T> = {
 };
 
 class Table<T> {
+  private basePath = join(__dirname, "../../data");
   private tableFileName: string;
   private data: T[] = [];
 
@@ -52,16 +54,23 @@ class Table<T> {
   private _flush(): void {
     const dataString = JSON.stringify(this.data);
 
-    fs.writeFileSync(`./data/${this.tableFileName}.json`, dataString, {
-      encoding: "utf-8",
-    });
+    fs.writeFileSync(
+      `${this.basePath}/${this.tableFileName}.json`,
+      dataString,
+      {
+        encoding: "utf-8",
+      },
+    );
   }
 
   private _reload(): void {
     try {
-      const rawData = fs.readFileSync(`./data/${this.tableFileName}.json`, {
-        encoding: "utf-8",
-      });
+      const rawData = fs.readFileSync(
+        `${this.basePath}/${this.tableFileName}.json`,
+        {
+          encoding: "utf-8",
+        },
+      );
 
       this.data = JSON.parse(rawData) as T[];
     } catch {
