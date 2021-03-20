@@ -5,11 +5,13 @@ import { join } from "path";
 import { getProductPriceDirectly, login } from "./core";
 import priceRepository from "./db/priceRepository";
 import mailer from "./mailer";
+import logger from "./logger";
 
 // read .env
 dotenv.config({ path: join(__dirname, "../", ".env") });
 
 async function main() {
+  logger.info("**************Begin***************");
   const browser = await puppeteer.launch({
     headless: true,
     args:
@@ -26,6 +28,7 @@ async function main() {
 
   // login first
   await login(page);
+  logger.info("Login complete.");
 
   // price changed list
   const priceChangedList = [];
@@ -36,6 +39,8 @@ async function main() {
 
     const priceInfo = priceRepository.getLatestPrice(url);
     const priceBef = priceInfo == null ? 0 : priceInfo.price;
+
+    logger.info(`[${url}]: [${priceBef}] vs [${latestPrice}]`);
 
     // save newest price & send mail if price changed
     if (latestPrice != null && priceBef !== latestPrice) {
@@ -69,10 +74,16 @@ async function main() {
       html: mailContents,
     });
   }
+
+  logger.info("Finished!");
 }
 
 main()
-  .then(() => process.exit())
-  .catch((ex) => {
-    throw ex;
+  .then()
+  .catch((ex: Error) => {
+    logger.error(ex.message);
+  })
+  .finally(() => {
+    logger.info("**************End***************");
+    process.exit();
   });
