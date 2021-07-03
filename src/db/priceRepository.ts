@@ -3,13 +3,18 @@ import Table from "./Table";
 
 interface IPrice {
   url: string;
-  price: number;
+  price: number | null;
+  inStock: boolean;
   updated: Date;
 }
 
 interface IPriceRepository {
   getLatestPrice: (url: string) => IPrice | null;
-  saveLatestPrice: (url: string, price: number) => IPrice;
+  saveLatestPrice: (
+    url: string,
+    price: number | null,
+    inStock: boolean,
+  ) => IPrice;
 }
 
 class PriceRepository implements IPriceRepository {
@@ -26,10 +31,11 @@ class PriceRepository implements IPriceRepository {
     return targets[0];
   }
 
-  saveLatestPrice(url: string, price: number): IPrice {
+  saveLatestPrice(url: string, price: number | null, inStock: boolean): IPrice {
     const priceData: IPrice = {
       url,
       price,
+      inStock,
       updated: new Date(),
     };
 

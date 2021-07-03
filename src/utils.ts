@@ -25,3 +25,7 @@ export function getRandomUserAgent(): string {
   const ind = Math.floor(Math.random() * UserAgents.length);
   return UserAgents[ind];
 }
+
+export function getStockTextInfo(isInStock: boolean): string {
+  return isInStock ? "在庫あり" : "在庫切れ";
+}

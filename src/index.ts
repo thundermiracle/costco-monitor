@@ -6,6 +6,7 @@ import { getProductPriceDirectly, login } from "./core";
 import priceRepository from "./db/priceRepository";
 import mailer from "./mailer";
 import logger from "./logger";
+import { getStockTextInfo } from "./utils";
 
 // read .env
 dotenv.config({ path: join(__dirname, "../", ".env") });
@@ -35,21 +36,31 @@ async function main() {
 
   for (let index = 0; index < Urls.length; index += 1) {
     const url = Urls[index];
-    const latestPrice = await getProductPriceDirectly(page, url);
+    const [latestPrice, inStockNow] = await getProductPriceDirectly(page, url);
 
     const priceInfo = priceRepository.getLatestPrice(url);
-    const priceBef = priceInfo == null ? 0 : priceInfo.price;
+    const priceBef = priceInfo?.price || 0;
+    const inStockBef = priceInfo?.inStock == null ? true : priceInfo?.inStock;
 
-    logger.info(`[${url}]: [${priceBef}] vs [${latestPrice}]`);
+    logger.info(
+      `[${url}]: [${priceBef}] vs [${latestPrice}]; [${getStockTextInfo(
+        inStockBef,
+      )}] vs [${getStockTextInfo(inStockNow)}]`,
+    );
 
     // save newest price & send mail if price changed
-    if (latestPrice != null && priceBef !== latestPrice) {
-      priceRepository.saveLatestPrice(url, latestPrice);
+    if (
+      (latestPrice != null && priceBef !== latestPrice) ||
+      inStockBef !== inStockNow
+    ) {
+      priceRepository.saveLatestPrice(url, latestPrice, inStockNow);
 
       priceChangedList.push({
         url,
         priceBef,
         latestPrice,
+        inStockBef,
+        inStockNow,
       });
     }
   }
@@ -60,11 +71,13 @@ async function main() {
   if (priceChangedList.length > 0) {
     const mailContents = priceChangedList
       .map(
-        ({ url, priceBef, latestPrice }) => `
+        ({ url, priceBef, latestPrice, inStockBef, inStockNow }) => `
       <div>
         <div><span>【商品リンク】：</span>　${url}</div>
         <div><span>【旧価格】：</span>　¥${priceBef}</div>
         <div><span>【新価格】：</span>　¥${latestPrice}</div>
+        <div><span>【旧在庫】：</span>　${getStockTextInfo(inStockBef)}</div>
+        <div><span>【新在庫】：</span>　${getStockTextInfo(inStockNow)}</div>
       </div>
     `,
       )

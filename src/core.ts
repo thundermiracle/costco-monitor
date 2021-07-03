@@ -3,6 +3,8 @@ import Constants from "./config/Constants";
 import SelectorNames, { ISelectorNames } from "./config/SelectorNames";
 import { getPriceFromString, getRandomUserAgent } from "./utils";
 
+type PriceInfo = [number | null, boolean];
+
 /* ************************ */
 /* Private functions 　　　　*/
 /* ************************ */
@@ -11,7 +13,7 @@ async function redirect(page: Page, url: string): Promise<void> {
   await page.goto(url, { timeout: 0 });
 }
 
-async function retrievePriceFromPage(page: Page): Promise<number | null> {
+async function retrievePriceInfoFromPage(page: Page): Promise<PriceInfo> {
   // Throws error if elment not exists
   // const priceString = await page.$eval(
   //   SelectorNames.PRICE,
@@ -33,7 +35,20 @@ async function retrievePriceFromPage(page: Page): Promise<number | null> {
     { ...SelectorNames },
   );
 
-  return getPriceFromString(priceString);
+  const inStock = await page.evaluate(
+    (selectorNames: ISelectorNames) => {
+      // Get 再入荷のお知らせボタン
+      const notifyWhenInStockDom = document.querySelector(
+        selectorNames.NOTIFY_WHEN_IN_STOCK,
+      );
+      const isInStock = notifyWhenInStockDom == null;
+
+      return isInStock;
+    },
+    { ...SelectorNames },
+  );
+
+  return [getPriceFromString(priceString), inStock];
 }
 /* End of private functions */
 
@@ -47,11 +62,11 @@ async function retrievePriceFromPage(page: Page): Promise<number | null> {
 export async function getProductPriceDirectly(
   page: Page,
   productUrl: string,
-): Promise<number | null> {
+): Promise<PriceInfo> {
   await redirect(page, productUrl);
 
-  const price = await retrievePriceFromPage(page);
-  return price;
+  const priceInfo = await retrievePriceInfoFromPage(page);
+  return priceInfo;
 }
 
 export async function login(page: Page): Promise<void> {
@@ -74,9 +89,9 @@ export async function login(page: Page): Promise<void> {
 export async function getProductPriceAfterLogin(
   page: Page,
   productUrl: string,
-): Promise<number | null> {
+): Promise<PriceInfo> {
   await login(page);
 
-  const price = await getProductPriceDirectly(page, productUrl);
-  return price;
+  const priceInfo = await getProductPriceDirectly(page, productUrl);
+  return priceInfo;
 }
