@@ -4,7 +4,7 @@
   "description": "Monitor product's price & send email when price is down",
   "main": "dist/index.js",
   "keywords": [
-    "costo",
+    "costco",
     "monitor",
     "price"
   ],
