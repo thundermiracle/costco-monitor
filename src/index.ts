@@ -36,7 +36,10 @@ async function main() {
 
   for (let index = 0; index < Urls.length; index += 1) {
     const url = Urls[index];
-    const [latestPrice, inStockNow] = await getProductPriceDirectly(page, url);
+    const [latestPrice, latestStockStatus] = await getProductPriceDirectly(
+      page,
+      url,
+    );
 
     const priceInfo = priceRepository.getLatestPrice(url);
     const priceBef = priceInfo?.price || 0;
@@ -45,22 +48,23 @@ async function main() {
     logger.info(
       `[${url}]: [${priceBef}] vs [${latestPrice}]; [${getStockTextInfo(
         inStockBef,
-      )}] vs [${getStockTextInfo(inStockNow)}]`,
+      )}] vs [${getStockTextInfo(latestStockStatus)}]`,
     );
 
     // save newest price & send mail if price changed
     if (
-      (latestPrice != null && priceBef !== latestPrice) ||
-      inStockBef !== inStockNow
+      (latestPrice != null && priceBef !== latestPrice) || // 価格変更
+      (latestPrice != null && inStockBef !== latestStockStatus) || // 在庫ステータス変更
+      (latestPrice == null && !latestStockStatus) // 在庫切れ
     ) {
-      priceRepository.saveLatestPrice(url, latestPrice, inStockNow);
+      priceRepository.saveLatestPrice(url, latestPrice, latestStockStatus);
 
       priceChangedList.push({
         url,
         priceBef,
         latestPrice,
         inStockBef,
-        inStockNow,
+        inStockNow: latestStockStatus,
       });
     }
   }
